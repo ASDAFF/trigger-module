@@ -1,0 +1,29 @@
+<?
+$MESS["ACTION_SAVE_ERR"] = "Ошибка при изменении действия #ID#: #ERROR_TEXT#";
+$MESS["ACTION_SAVE_ERR2"] = "Ошибка при изменении действия #ID#";
+$MESS["action_err1"] = "Ошибка удаления действия.";
+$MESS["ACTION_TITLE"] = "Действия";
+$MESS["action"] = "Действие";
+$MESS["ACTION_NAME_DESC"] = "Полное название действия";
+$MESS["ACTION_NAME"] = "Название";
+$MESS["action_sort"] = "Сорт.";
+$MESS["action_sort_ex"] = "Индекс сортировки";
+$MESS["ACTION_A_EDIT_TITLE"] = "Редактировать параметры действия";
+$MESS["ACTION_A_EDIT"] = "редактировать параметры действия";
+$MESS["action_add"] = "Добавить действие";
+$MESS["action_list"] = "Список действий";
+$MESS["action_settings"] = "Настройки действия";
+$MESS["action_error"] = "Ошибка";
+$MESS["action_format_string"] = "Не заполнено поле \"Формат\" для языка #LANG#.";
+$MESS["ACTION_NEW_TITLE"] = "Создать новое действие";
+$MESS["ACTION_EDIT_TITLE"] = "Редактировать действие";
+$MESS["EVENT_NEW_TITLE"] = "Создать новое событие";
+$MESS["EVENT_EDIT_TITLE"] = "Редактировать событие";
+$MESS ['BAGE'] = "Бейдж";
+$MESS ['ADD_POINTS'] = "Баллы";
+$MESS ['SEND_MAIL'] = "Почтовый шаблон";
+$MESS ['DATE_CREATE'] = "Дата создания";
+$MESS ['CREATED_USER_NAME'] = "Кем создана";
+$MESS ['TRIGGER'] = "Триггер";
+$MESS ['VARIABLES'] = "Переменные";
+?>

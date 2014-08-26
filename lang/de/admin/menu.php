@@ -1,0 +1,30 @@
+<?
+$MESS ['AD_MENU_BANNER_LIST'] = "Banner";
+$MESS ['AD_MENU_BANNER_LIST_DIAGRAM'] = "Banner";
+$MESS ['AD_MENU_BANNER_LIST_GRAPH'] = "Banner";
+$MESS ['AD_MENU_BANNER_LIST_ALT'] = "Banner";
+$MESS ['AD_MENU_STATISTICS_ALT'] = "Bannerdiagramme";
+$MESS ['AD_MENU_TYPE_LIST_ALT'] = "Bannertypen";
+$MESS ['AD_MENU_TYPE_LIST'] = "Bannertypen";
+$MESS ['AD_MENU_TYPE_LIST_DIAGRAM'] = "Bannertypen";
+$MESS ['AD_MENU_TYPE_LIST_GRAPH'] = "Bannertypen";
+$MESS ['AD_MENU_REPORTS'] = "Berichte";
+$MESS ['AD_MENU_STATISTICS'] = "Diagramme";
+$MESS ['AD_MENU_STATISTICS_DIAGRAM'] = "Diagramme";
+$MESS ['AD_MENU_STATISTICS_ALT_DIAGRAM'] = "Diagramme: Anzeige und Klicks";
+$MESS ['AD_MENU_DIAG_BAN'] = "Diagramme: Banner";
+$MESS ['AD_MENU_DIAG_CO'] = "Diagramme: Verträge";
+$MESS ['AD_MENU_DIAG_CO_TITLE'] = "Diagramme: Verträge";
+$MESS ['AD_MENU_STATISTICS_GRAPH'] = "Grafiken";
+$MESS ['AD_MENU_STATISTICS_ALT_GRAPH'] = "Grafiken: Anzeige und Klicks der Banner";
+$MESS ['AD_MENU_BAN_GR'] = "Grafiken: Banner";
+$MESS ['AD_MENU_BAN_CO'] = "Grafiken: Verträge";
+$MESS ['AD_MENU_BAN_CO_TITLE'] = "Grafiken: Verträge";
+$MESS ['AD_MENU_REPORTS_TITLE'] = "Grafischer Bericht für Banner und Verträge";
+$MESS ['AD_MENU_CONTRACT_LIST'] = "Veträge";
+$MESS ['AD_MENU_CONTRACT_LIST_DIAGRAM'] = "Veträge";
+$MESS ['AD_MENU_CONTRACT_LIST_GRAPH'] = "Veträge";
+$MESS ['AD_MENU_CONTRACT_LIST_ALT'] = "Werbeverträge";
+$MESS ['AD_MENU_MAIN'] = "Werbung";
+$MESS ['AD_MENU_MAIN_TITLE'] = "Werbung verwalten";
+?>
