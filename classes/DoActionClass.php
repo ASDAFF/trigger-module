@@ -113,6 +113,56 @@ class CFoodclubEventDoAction
 		foreach($arConditions as $child){			
             if(strlen($child["CLASS_ID"]) > 0 && !empty($child["DATA"])){
                 switch($child["CLASS_ID"]){
+                	case 'CondUserName':
+                	if(CFoodclubEventCompare::compareString(
+                        $arFields["NAME"],
+                        $child["DATA"]["logic"],
+                        $child["DATA"]["value"]
+                    ))
+                    {
+                        self::increas();
+                    }
+                	break;
+					case 'CondUserLastName':
+					if(CFoodclubEventCompare::compareString(
+                        $arFields["LAST_NAME"],
+                        $child["DATA"]["logic"],
+                        $child["DATA"]["value"]
+                    ))
+                    {
+                        self::increas();
+                    }
+					break;
+					case 'CondUserEmail':
+					if(CFoodclubEventCompare::compareString(
+                        $arFields["EMAIL"],
+                        $child["DATA"]["logic"],
+                        $child["DATA"]["value"]
+                    ))
+                    {
+                        self::increas();
+                    }
+					break;
+					case 'CondPersonalPhoto':
+					/*if(CFoodclubEventCompare::compare(
+                        $arFields["EMAIL"],
+                        $child["DATA"]["logic"],
+                        $child["DATA"]["value"]
+                    ))
+                    {
+                        self::increas();
+                    }*/
+					break;
+					case 'CondUserWorkWWW':
+					if(CFoodclubEventCompare::compareString(
+                        $arFields["WORK_WWW"],
+                        $child["DATA"]["logic"],
+                        $child["DATA"]["value"]
+                    ))
+                    {
+                        self::increas();
+                    }
+					break;
                     case "CondUserGroup":
                     //Проверяем группу пользователя                                        
                     if(CFoodclubEventCompare::compareArray(
@@ -234,34 +284,6 @@ class CFoodclubEventDoAction
 		}
 	}	
 
-	/*
-    И
-    [CLASS_ID] => CondGroup
-    [DATA] => Array
-        (
-            [All] => AND
-            [True] => True
-        )
-    */
-    /*
-    Или не
-    [CLASS_ID] => CondGroup
-    [DATA] => Array
-        (
-            [All] => OR
-            [True] => False
-        )
-    */
-
-    /*
-    И не
-    [CLASS_ID] => CondGroup
-    [DATA] => Array
-        (
-            [All] => AND
-            [True] => False
-        )
-    */
 	function checkLogic($arData,$trueCount,$condCount){
 		if($arData["All"] == "AND"){
 			if($arData["True"] == "True"){				

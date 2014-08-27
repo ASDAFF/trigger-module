@@ -22,19 +22,55 @@ class CFoodclubEventCompare
 				break;
 
 			case 'Great':
-				return ($value > $user_id ? true : false);
-				break;
-
-			case 'Less':
 				return ($value < $user_id ? true : false);
 				break;
 
+			case 'Less':
+				return ($value > $user_id ? true : false);
+				break;
+
 			case 'EqGr':
-				return ($value >= $user_id ? true : false);
+				return ($value <= $user_id ? true : false);
 				break;
 
 			case 'EqLs':
-				return ($value <= $user_id ? true : false);
+				return ($value >= $user_id ? true : false);
+				break;
+		}
+	}
+
+	function compareString($user_id = "", $logic, $value){
+		switch ($logic) {
+			case 'Equal':
+				return ($value == $user_id ? true : false);
+				break;
+
+			case 'Not':
+				return ($value != $user_id ? true : false);
+				break;
+
+			case 'Contain':
+				return (strpos($user_id,$value) !== false ? true : false);
+				break;
+
+			case 'NotCont':
+				return (strpos($user_id,$value) === false ? true : false);
+				break;
+
+			case 'Great':
+				return ($value < strlen($user_id) ? true : false);
+				break;
+
+			case 'Less':
+				return ($value > strlen($user_id) ? true : false);
+				break;
+
+			case 'EqGr':
+				return ($value <= strlen($user_id) ? true : false);
+				break;
+
+			case 'EqLs':
+				return ($value >= strlen($user_id) ? true : false);
 				break;
 		}
 	}
@@ -81,6 +117,11 @@ class CFoodclubEventCompare
 			switch ($condition) {
 				case 'compare':
 					if(self::compare($values[0],$values[1],$values[2]))
+						$trueCount++;
+					break;
+
+				case 'compareString':
+					if(self::compareString($values[0],$values[1],$values[2]))
 						$trueCount++;
 					break;
 

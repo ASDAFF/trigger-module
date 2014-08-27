@@ -6,6 +6,7 @@ class CFoodclubEventAction{
 
     private $_fields = array();
     private $_user = array();
+    private $_user_fields = array();
     private $trueEventCounter = 0;
 
     function __construct() {
@@ -27,6 +28,7 @@ class CFoodclubEventAction{
     function action(){
         foreach($this->_fields["EVENTS"] as $event){
             $bOk = true;
+
             if(strlen($event["CONDITIONS"]) > 0 ){
                 $TriggerList = array();
                 $arActionID = array();
@@ -35,10 +37,12 @@ class CFoodclubEventAction{
                 $bOk = false;
 
                 $arConditions = unserialize($event["CONDITIONS"]);
+
                 if(!empty($arConditions["CHILDREN"])){                        
                     $NeedTrueEvent = count($arConditions["CHILDREN"]);                    
                     self::countTrueEvents($arConditions["CHILDREN"]);
-                    $TrueEventCounter = self::getTrueEventCounter();                    
+                    $TrueEventCounter = self::getTrueEventCounter();
+                    //echo $TrueEventCounter."@".$NeedTrueEvent;die;
                     $bOk = CFoodclubEventCompare::checkLogic($arConditions["DATA"],$TrueEventCounter,$NeedTrueEvent);
                 }                
                 if($bOk){
@@ -47,6 +51,17 @@ class CFoodclubEventAction{
                 }
             }
         }
+    }
+
+    function getUserEntityFields(){
+        if(empty($this->_user_fields)){
+            $rsData = CUserTypeEntity::GetList(array($by=>$order), array());
+            while($arData = $rsData->GetNext()){
+                $this->_user_fields[ $arData["ID"] ] = $arData;
+            }
+
+        }
+        return $this->_user_fields;
     }
 
     function getUserFields(){
@@ -107,102 +122,16 @@ class CFoodclubEventAction{
         if(!empty($arCheckValues) && !empty($arCheckValues)){
             foreach ($arCheckValues as $child) {
                 switch($child["CLASS_ID"]){
-                    /*case "CondUserGroup":
-                    //Проверяем группу пользователя                                        
-                    if(CFoodclubEventCompare::compareArrayKey(
-                        CUser::GetUserGroupArray(),
-                        $child["DATA"]["logic"],
-                        $child["DATA"]["value"]
-                    ) && 
-                    CFoodclubEventCompare::compare(
-                        $arCheckQuantityValue["value"],
-                        $arCheckQuantityValue["logic"],
-                        $child["DATA"]["value"]
-                    ))
-                    {
-                       $trueEventCounter++; 
-                    }
-                    break;
-                    case "CondIBElement":
-                    if(CFoodclubEventCompare::compare(
-                        $this->_fields["ID"],
-                        $child["DATA"]["logic"],
-                        $child["DATA"]["value"]
-                    ) && 
-                    CFoodclubEventCompare::compare(
-                        $arCheckQuantityValue["value"],
-                        $arCheckQuantityValue["logic"],
-                        $child["DATA"]["value"]
-                    ))
-                    {
-                        $trueEventCounter++;
-                    }
-                    break;
-                    case "CondIBSection":
-                    //Проверяем группу пользователя                                        
-                    if(CFoodclubEventCompare::compare(
-                        $this->_fields["SECTION_ID"],
-                        $child["DATA"]["logic"],
-                        $child["DATA"]["value"]
-                    ) && 
-                    CFoodclubEventCompare::compare(
-                        $arCheckQuantityValue["value"],
-                        $arCheckQuantityValue["logic"],
-                        $child["DATA"]["value"]
-                    ))
-                    {
-                        $trueEventCounter++;
-                    }
-                    break;
-                    case "CondIBIBlock":                      
-                    //Проверяем группу пользователя                       
-                    if(CFoodclubEventCompare::compare(
-                        $this->_fields["IBLOCK_ID"],
-                        $child["DATA"]["logic"],
-                        $child["DATA"]["value"]
-                    ) && 
-                    CFoodclubEventCompare::compare(
-                        $arCheckQuantityValue["value"],
-                        $arCheckQuantityValue["logic"],
-                        $child["DATA"]["value"]
-                    ))
-                    {                        
-                        $trueEventCounter++;
-                    }
-                    break;
-                    case "CondUser":
-                    //Проверяем пользователя
-                    if(CFoodclubEventCompare::compare(
-                        CUser::GetID(),
-                        $child["DATA"]["logic"],
-                        $child["DATA"]["value"]
-                    ) && 
-                    CFoodclubEventCompare::compare(
-                        $arCheckQuantityValue["value"],
-                        $arCheckQuantityValue["logic"],
-                        $child["DATA"]["value"]
-                    ))
-                    {
-                        $trueEventCounter++;
-                    }
-                    break;*/
                     case "CondIBElementProperty":
                     if(CFoodclubEventCompare::compareConditions(array( "compareArrayKey" => array($this->_fields["PROPERTY_VALUES"],$child["DATA"]["logic"],$child["DATA"]["value"]), "compare" => array($arCheckQuantityValue["value"],$arCheckQuantityValue["logic"],$this->_fields["PROPERTY_VALUES"][ $child["DATA"]["value"] ]) ), $arConditions["DATA"])){
                         $trueEventCounter++;
                     }
-                    /*if(CFoodclubEventCompare::compareArrayKey(
-                        $this->_fields["PROPERTY_VALUES"],
-                        $child["DATA"]["logic"],
-                        $child["DATA"]["value"]
-                    ) && 
-                    CFoodclubEventCompare::compare(
-                        $arCheckQuantityValue["value"],
-                        $arCheckQuantityValue["logic"],
-                        $this->_fields["PROPERTY_VALUES"][ $child["DATA"]["value"] ]
-                    ))
-                    {
+                    break;
+                    case "CondUserProperty":
+                    $user_props = self::getUserEntityFields();
+                    if(CFoodclubEventCompare::compareConditions(array( "compareArrayKey" => array($this->_fields,$child["DATA"]["logic"],$user_props[ $child["DATA"]["value"] ]["FIELD_NAME"]), "compareString" => array($arCheckQuantityValue["value"],$arCheckQuantityValue["logic"],$this->_fields[ $user_props[ $child["DATA"]["value"] ]["FIELD_NAME"] ]) ), $arConditions["DATA"])){
                         $trueEventCounter++;
-                    }*/
+                    }
                     break;
                 }
             }            
@@ -212,11 +141,63 @@ class CFoodclubEventAction{
     }
 
     function checkChildCond($arConditions){
+        //echo "<pre>@";print_r($arConditions);echo "@</pre>";die;
         $trueEventCounter = 0;
         $needTrueEvent = count($arConditions["CHILDREN"]);
         if(!empty($arConditions["CHILDREN"])){
             foreach ($arConditions["CHILDREN"] as $child) {
                 switch($child["CLASS_ID"]){
+                    case 'CondUserName':
+                    if(CFoodclubEventCompare::compareString(
+                        $this->_fields["NAME"],
+                        $child["DATA"]["logic"],
+                        $child["DATA"]["value"]
+                    ))
+                    {
+                        $trueEventCounter++;
+                    }
+                    break;
+                    case 'CondUserLastName':
+                    if(CFoodclubEventCompare::compareString(
+                        $this->_fields["LAST_NAME"],
+                        $child["DATA"]["logic"],
+                        $child["DATA"]["value"]
+                    ))
+                    {
+                        $trueEventCounter++;
+                    }
+                    break;
+                    case 'CondUserEmail':
+                    if(CFoodclubEventCompare::compareString(
+                        $this->_fields["EMAIL"],
+                        $child["DATA"]["logic"],
+                        $child["DATA"]["value"]
+                    ))
+                    {
+                        $trueEventCounter++;
+                    }
+                    break;
+                    case 'CondPersonalPhoto':
+                    $user = self::getUserFields();
+                    if(CFoodclubEventCompare::compare(
+                        $user["PERSONAL_PHOTO"],
+                        $child["DATA"]["logic"],
+                        $child["DATA"]["value"]
+                    ))
+                    {
+                        $trueEventCounter++;
+                    }
+                    break;
+                    case 'CondUserWorkWWW':
+                    if(CFoodclubEventCompare::compareString(
+                        $this->_fields["WORK_WWW"],
+                        $child["DATA"]["logic"],
+                        $child["DATA"]["value"]
+                    ))
+                    {
+                        $trueEventCounter++;
+                    }
+                    break;
                     case "CondIBTags":
                     if(CFoodclubEventCompare::compare(
                         $this->_fields["TAGS"],
@@ -224,7 +205,7 @@ class CFoodclubEventAction{
                         $child["DATA"]["value"]
                     ))
                     {
-                       $trueEventCounter++; 
+                       $trueEventCounter++;
                     }
                     break;
                     case "CondIBModifiedBy":
@@ -458,10 +439,61 @@ class CFoodclubEventAction{
 
     //count true event tree elements
     function countTrueEvents($arConditions){
-        //echo "<pre>";print_r($this->_fields);echo "</pre>";
+        //echo "<pre>";print_r($arConditions);echo "</pre>";
         foreach($arConditions as $child){          
               if(strlen($child["CLASS_ID"]) > 0 && !empty($child["DATA"])){
                   switch($child["CLASS_ID"]){
+                      case 'CondUserName':
+                      if(CFoodclubEventCompare::compareString(
+                          $this->_fields["NAME"],
+                          $child["DATA"]["logic"],
+                          $child["DATA"]["value"]
+                      ))
+                      {
+                          self::increas();
+                      }
+                      break;
+                      case 'CondUserLastName':
+                      if(CFoodclubEventCompare::compareString(
+                          $this->_fields["LAST_NAME"],
+                          $child["DATA"]["logic"],
+                          $child["DATA"]["value"]
+                      ))
+                      {
+                          self::increas();
+                      }
+                      break;
+                      case 'CondUserEmail':
+                      if(CFoodclubEventCompare::compareString(
+                          $this->_fields["EMAIL"],
+                          $child["DATA"]["logic"],
+                          $child["DATA"]["value"]
+                      ))
+                      {
+                          self::increas();
+                      }
+                      break;
+                      case 'CondPersonalPhoto':
+                      $user = self::getUserFields();
+                      if(CFoodclubEventCompare::compare(
+                          $user["PERSONAL_PHOTO"],
+                          $child["DATA"]["logic"],
+                          $child["DATA"]["value"]
+                      ))
+                      {
+                          self::increas();
+                      }
+                      break;
+                      case 'CondUserWorkWWW':
+                      if(CFoodclubEventCompare::compareString(
+                          $this->_fields["WORK_WWW"],
+                          $child["DATA"]["logic"],
+                          $child["DATA"]["value"]
+                      ))
+                      {
+                          self::increas();
+                      }
+                      break;
                       case "CondIBTags":
                       if(CFoodclubEventCompare::compare(
                           $this->_fields["TAGS"],

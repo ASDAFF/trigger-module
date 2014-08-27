@@ -404,6 +404,7 @@ class CGlobalCondCtrl
 			$boolValueError = static::ClearValue($arOneCondition['value']);
 			if (!$boolValueError)
 			{
+				//echo "<pre>";print_r($arControl);echo "</pre>";die;
 				switch ($arControl['FIELD_TYPE'])
 				{
 					case 'int':
@@ -939,6 +940,48 @@ class CGlobalCondCtrl
 							}
 						}
 						break;
+					case 'user_property':
+						if (is_array($arOneCondition['value']))
+						{
+							$arCheckResult = array();
+							foreach ($arOneCondition['value'] as &$intPropID)
+							{
+
+								$arProp = CUserTypeEntity::GetByID( $intPropID );
+								if (!empty($arProp))
+								{
+									$strName = trim($arProp['FIELD_NAME']);
+									$arCheckResult[$intPropID] = $strName;
+								}
+							}
+							if (isset($intPropID))
+								unset($intPropID);
+							if (!empty($arCheckResult))
+							{
+								$arResult['values'] = array_keys($arCheckResult);
+								$arResult['labels'] = array_values($arCheckResult);
+							}
+							else
+							{
+								$boolError = true;
+								$arMsg[] = GetMessage('BT_MOD_COND_ERR_CHECK_DATA_USER_ABSENT_MULTI');
+							}
+						}
+						else
+						{
+							$arProp = CUserTypeEntity::GetByID( $arOneCondition['value'] );
+							if (!empty($arProp))
+							{
+								$arResult['values'] = $arOneCondition['value'];
+								$arResult['labels'] = trim($arProp['FIELD_NAME']);
+							}
+							else
+							{
+								$boolError = true;
+								$arMsg[] = GetMessage('BT_MOD_COND_ERR_CHECK_DATA_USER_ABSENT');
+							}
+						}
+						break;
 					case 'list':
 						if (isset($arControl['JS_VALUE']) && is_array($arControl['JS_VALUE']) && isset($arControl['JS_VALUE']['values']) && !empty($arControl['JS_VALUE']['values']))
 						{
@@ -1154,6 +1197,49 @@ class CGlobalCondCtrl
 							else
 							{
 								$boolError = true;
+							}
+						}
+						break;
+					case 'user_property':
+						if (is_array($arOneCondition['value']))
+						{
+							$arCheckResult = array();
+							foreach ($arOneCondition['value'] as &$intPropID)
+							{
+
+								$arProp = CUserTypeEntity::GetByID( $intPropID );
+								if (!empty($arProp))
+								{
+									$strName = trim($arProp['FIELD_NAME']);
+									$arCheckResult[$intPropID] = $strName;
+								}
+							}
+							if (isset($intPropID))
+								unset($intPropID);
+							if (!empty($arCheckResult))
+							{
+								$arResult['values'] = array_keys($arCheckResult);
+								$arResult['labels'] = array_values($arCheckResult);
+							}
+							else
+							{
+								$boolError = true;
+								$arMsg[] = GetMessage('BT_MOD_COND_ERR_CHECK_DATA_USER_ABSENT_MULTI');
+							}
+						}
+						else
+						{
+							//echo "@".$arOneCondition['value']."@";die;
+							$arProp = CUserTypeEntity::GetByID( $arOneCondition['value'] );
+							if (!empty($arProp))
+							{
+								$arResult['values'] = $arOneCondition['value'];
+								$arResult['labels'] = trim($arProp['FIELD_NAME']);
+							}
+							else
+							{
+								$boolError = true;
+								$arMsg[] = GetMessage('BT_MOD_COND_ERR_CHECK_DATA_USER_ABSENT');
 							}
 						}
 						break;
@@ -1855,7 +1941,13 @@ class CCatalogCondCtrlIBlockFields extends CCatalogCondCtrlComplex
 			'CondIBElementProperty',
 			'CondQuantityValue',
 			'CondUserDateRegister',
-			'CondUserLADate'
+			'CondUserLADate',
+			'CondUserProperty',
+			'CondUserName',
+			'CondUserLastName',
+			'CondUserEmail',
+			'CondPersonalPhoto',
+			'CondUserWorkWWW'
 		);
 	}
 
@@ -1935,6 +2027,81 @@ class CCatalogCondCtrlIBlockFields extends CCatalogCondCtrlComplex
 					'VALIDATE' => 'user'
 				),
 			),
+			'CondUserName' => array(
+				'ID' => 'CondUserName',
+				'FIELD' => 'CODE',
+				'FIELD_TYPE' => 'string',
+				'FIELD_LENGTH' => 255,
+				'MULTIPLE' => 'N',
+				'GROUP' => 'N',
+				'LABEL' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_CODE_LABEL'),
+				'PREFIX' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_CODE_PREFIX'),
+				'LOGIC' => static::GetLogic(array(BT_COND_LOGIC_EQ, BT_COND_LOGIC_NOT_EQ, BT_COND_LOGIC_CONT, BT_COND_LOGIC_NOT_CONT,BT_COND_LOGIC_GR, BT_COND_LOGIC_LS)),
+				'JS_VALUE' => array(
+					'type' => 'input',
+				),
+				'PHP_VALUE' => '',
+			),
+			'CondUserLastName' => array(
+				'ID' => 'CondUserLastName',
+				'FIELD' => 'CODE',
+				'FIELD_TYPE' => 'string',
+				'FIELD_LENGTH' => 255,
+				'MULTIPLE' => 'N',
+				'GROUP' => 'N',
+				'LABEL' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_CODE_LABEL'),
+				'PREFIX' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_CODE_PREFIX'),
+				'LOGIC' => static::GetLogic(array(BT_COND_LOGIC_EQ, BT_COND_LOGIC_NOT_EQ, BT_COND_LOGIC_CONT, BT_COND_LOGIC_NOT_CONT,BT_COND_LOGIC_GR, BT_COND_LOGIC_LS)),
+				'JS_VALUE' => array(
+					'type' => 'input',
+				),
+				'PHP_VALUE' => '',
+			),
+			'CondUserEmail' => array(
+				'ID' => 'CondUserEmail',
+				'FIELD' => 'CODE',
+				'FIELD_TYPE' => 'string',
+				'FIELD_LENGTH' => 255,
+				'MULTIPLE' => 'N',
+				'GROUP' => 'N',
+				'LABEL' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_CODE_LABEL'),
+				'PREFIX' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_CODE_PREFIX'),
+				'LOGIC' => static::GetLogic(array(BT_COND_LOGIC_EQ, BT_COND_LOGIC_NOT_EQ, BT_COND_LOGIC_CONT, BT_COND_LOGIC_NOT_CONT,BT_COND_LOGIC_GR, BT_COND_LOGIC_LS)),
+				'JS_VALUE' => array(
+					'type' => 'input',
+				),
+				'PHP_VALUE' => '',
+			),
+			'CondPersonalPhoto' => array(
+				'ID' => 'CondPersonalPhoto',
+				'FIELD' => 'CODE',
+				'FIELD_TYPE' => 'string',
+				'FIELD_LENGTH' => 255,
+				'MULTIPLE' => 'N',
+				'GROUP' => 'N',
+				'LABEL' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_CODE_LABEL'),
+				'PREFIX' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_CODE_PREFIX'),
+				'LOGIC' => static::GetLogic(array(BT_COND_LOGIC_EQ, BT_COND_LOGIC_NOT_EQ, BT_COND_LOGIC_CONT, BT_COND_LOGIC_NOT_CONT,BT_COND_LOGIC_GR, BT_COND_LOGIC_LS)),
+				'JS_VALUE' => array(
+					'type' => 'input',
+				),
+				'PHP_VALUE' => '',
+			),
+			'CondUserWorkWWW' => array(
+				'ID' => 'CondUserWorkWWW',
+				'FIELD' => 'CODE',
+				'FIELD_TYPE' => 'string',
+				'FIELD_LENGTH' => 255,
+				'MULTIPLE' => 'N',
+				'GROUP' => 'N',
+				'LABEL' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_CODE_LABEL'),
+				'PREFIX' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_CODE_PREFIX'),
+				'LOGIC' => static::GetLogic(array(BT_COND_LOGIC_EQ, BT_COND_LOGIC_NOT_EQ, BT_COND_LOGIC_CONT, BT_COND_LOGIC_NOT_CONT,BT_COND_LOGIC_GR, BT_COND_LOGIC_LS)),
+				'JS_VALUE' => array(
+					'type' => 'input',
+				),
+				'PHP_VALUE' => '',
+			),
 			'CondUserGroup' => array(
 				'ID' => 'CondUserGroup',
 				'FIELD' => 'GROUP_ID',
@@ -1955,6 +2122,28 @@ class CCatalogCondCtrlIBlockFields extends CCatalogCondCtrlComplex
 				),
 				'PHP_VALUE' => array(
 					'VALIDATE' => 'group'
+				),
+			),
+			'CondUserProperty' => array(
+				'ID' => 'CondUserProperty',
+				'FIELD' => 'USER_PROPERTY',
+				'FIELD_TYPE' => 'int',
+				'MULTIPLE' => 'N',
+				'GROUP' => 'N',
+				'LABEL' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_ELEMENT_ID_LABEL'),
+				'PREFIX' => GetMessage('BT_MOD_CATALOG_COND_CMP_IBLOCK_ELEMENT_ID_PREFIX'),
+				'LOGIC' => static::GetLogic(array(BT_COND_LOGIC_EQ, BT_COND_LOGIC_NOT_EQ)),
+				'JS_VALUE' => array(
+					'type' => 'popup',
+					'popup_url' =>  '/bitrix/admin/fevent_user_property_search.php',
+					'popup_params' => array(
+						'lang' => LANGUAGE_ID,
+					),
+					'param_id' => 'n',
+					'show_value' => 'Y',
+				),
+				'PHP_VALUE' => array(
+					'VALIDATE' => 'user_property'
 				),
 			),
 			'CondUserDateRegister' => array(
@@ -3589,6 +3778,181 @@ class CGlobalCondTree
             ]
          },
          {
+            'controlId':'CondUserName',
+            'group':false,
+            'label':'Имя',
+            'showIn':[
+               'CondUserName'
+            ],
+            'control':[
+			{
+				'id':'prefix',
+				'type':'prefix',
+				'text':'Имя'
+			},
+			{
+				'id':'logic',
+				'name':'logic',
+				'type':'select',
+				'values':{
+					'Equal':'равно',
+					'Not':'не равно',
+					'Contain':'содержит',
+					'NotCont':'не содержит',
+					'Great':'больше',
+					'Less':'меньше'
+				},
+				'defaultText':'равно',
+				'defaultValue':'Equal'
+			},
+			{
+				'type':'input',
+				'id':'value',
+				'name':'value'
+			}
+			]
+         },
+         {
+            'controlId':'CondUserLastName',
+            'group':false,
+            'label':'Фамилия',
+            'showIn':[
+               'CondUserLastName'
+            ],
+            'control':[
+			{
+				'id':'prefix',
+				'type':'prefix',
+				'text':'Фамилия'
+			},
+			{
+				'id':'logic',
+				'name':'logic',
+				'type':'select',
+				'values':{
+					'Equal':'равно',
+					'Not':'не равно',
+					'Contain':'содержит',
+					'NotCont':'не содержит',
+					'Great':'больше',
+					'Less':'меньше'
+				},
+				'defaultText':'равно',
+				'defaultValue':'Equal'
+			},
+			{
+				'type':'input',
+				'id':'value',
+				'name':'value'
+			}
+			]
+         },
+         {
+            'controlId':'CondUserEmail',
+            'group':false,
+            'label':'Email',
+            'showIn':[
+               'CondUserEmail'
+            ],
+            'control':[
+			{
+				'id':'prefix',
+				'type':'prefix',
+				'text':'Email'
+			},
+			{
+				'id':'logic',
+				'name':'logic',
+				'type':'select',
+				'values':{
+					'Equal':'равно',
+					'Not':'не равно',
+					'Contain':'содержит',
+					'NotCont':'не содержит',
+					'Great':'больше',
+					'Less':'меньше'
+				},
+				'defaultText':'равно',
+				'defaultValue':'Equal'
+			},
+			{
+				'type':'input',
+				'id':'value',
+				'name':'value'
+			}
+			]
+         },
+         {
+            'controlId':'CondPersonalPhoto',
+            'group':false,
+            'label':'Фотография',
+            'showIn':[
+               'CondPersonalPhoto'
+            ],
+            'control':[
+			{
+				'id':'prefix',
+				'type':'prefix',
+				'text':'Фотография'
+			},
+			{
+				'id':'logic',
+				'name':'logic',
+				'type':'select',
+				'values':{
+					'Equal':'равно',
+					'Not':'не равно',
+					'Contain':'содержит',
+					'NotCont':'не содержит',
+					'Great':'больше',
+					'Less':'меньше'
+				},
+				'defaultText':'равно',
+				'defaultValue':'Equal'
+			},
+			{
+				'type':'input',
+				'id':'value',
+				'name':'value'
+			}
+			]
+         },
+         {
+            'controlId':'CondUserWorkWWW',
+            'group':false,
+            'label':'Ваш сайт',
+            'showIn':[
+               'CondUserWorkWWW'
+            ],
+            'control':[
+			{
+				'id':'prefix',
+				'type':'prefix',
+				'text':'Ваш сайт'
+			},
+			{
+				'id':'logic',
+				'name':'logic',
+				'type':'select',
+				'values':{
+					'Equal':'равно',
+					'Not':'не равно',
+					'Contain':'содержит',
+					'NotCont':'не содержит',
+					'Great':'больше',
+					'Less':'меньше'
+				},
+				'defaultText':'равно',
+				'defaultValue':'Equal'
+			},
+			{
+				'type':'input',
+				'id':'value',
+				'name':'value'
+			}
+			]
+         },
+         {
             'controlId':'CondUserGroup',
             'group':false,
             'label':'Группы пользователей',
@@ -3626,9 +3990,9 @@ class CGlobalCondTree
             ]
          },
          {
-            'controlId':'CondUserGroup',
+            'controlId':'CondUserProperty',
             'group':false,
-            'label':'Группы пользователей',
+            'label':'Свойство пользователя',
             'showIn':[
                'CondGroup'
             ],
@@ -3636,7 +4000,7 @@ class CGlobalCondTree
                {
                   'id':'prefix',
                   'type':'prefix',
-                  'text':'Группа пользователей'
+                  'text':'Свойство пользователя'
                },
                {
                   'id':'logic',
@@ -3651,7 +4015,7 @@ class CGlobalCondTree
                },
                {
                   'type':'popup',
-                  'popup_url':'/bitrix/admin/fevent_user_group_search.php',
+                  'popup_url':'/bitrix/admin/fevent_user_property_search.php',
                   'popup_params':{
                      'lang':'ru'
                   },
@@ -3964,6 +4328,294 @@ class CGlobalCondTree
 	                    "ApplyValues"
 	                )
 
+	        ),
+
+			"CondUserWorkWWW" => Array
+	        (
+	           "GetControlShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetControlShow"
+	                ),
+
+	            "GetConditionShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetConditionShow"
+	                ),
+
+	            "IsGroup" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "IsGroup"
+	                ),
+
+	            "Parse" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Parse"
+	                ),
+
+	            "Generate" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Generate"
+	                ),
+
+	            "ApplyValues" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "ApplyValues"
+	                ),
+
+	            "InitParams" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "InitParams"
+	                ),
+
+	            "ID" => "CondUserWorkWWW",
+	            "GROUP" => "Y"
+	        ),
+
+			"CondPersonalPhoto" => Array
+	        (
+	           "GetControlShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetControlShow"
+	                ),
+
+	            "GetConditionShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetConditionShow"
+	                ),
+
+	            "IsGroup" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "IsGroup"
+	                ),
+
+	            "Parse" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Parse"
+	                ),
+
+	            "Generate" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Generate"
+	                ),
+
+	            "ApplyValues" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "ApplyValues"
+	                ),
+
+	            "InitParams" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "InitParams"
+	                ),
+
+	            "ID" => "CondPersonalPhoto",
+	            "GROUP" => "Y"
+	        ),
+
+			"CondUserEmail" => Array
+	        (
+	           "GetControlShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetControlShow"
+	                ),
+
+	            "GetConditionShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetConditionShow"
+	                ),
+
+	            "IsGroup" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "IsGroup"
+	                ),
+
+	            "Parse" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Parse"
+	                ),
+
+	            "Generate" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Generate"
+	                ),
+
+	            "ApplyValues" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "ApplyValues"
+	                ),
+
+	            "InitParams" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "InitParams"
+	                ),
+
+	            "ID" => "CondUserEmail",
+	            "GROUP" => "Y"
+	        ),
+			
+			"CondUserLastName" => Array
+	        (
+	           "GetControlShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetControlShow"
+	                ),
+
+	            "GetConditionShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetConditionShow"
+	                ),
+
+	            "IsGroup" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "IsGroup"
+	                ),
+
+	            "Parse" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Parse"
+	                ),
+
+	            "Generate" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Generate"
+	                ),
+
+	            "ApplyValues" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "ApplyValues"
+	                ),
+
+	            "InitParams" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "InitParams"
+	                ),
+
+	            "ID" => "CondUserLastName",
+	            "GROUP" => "Y"
+	        ),
+
+			"CondUserName" => Array
+	        (
+	           "GetControlShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetControlShow"
+	                ),
+
+	            "GetConditionShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetConditionShow"
+	                ),
+
+	            "IsGroup" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "IsGroup"
+	                ),
+
+	            "Parse" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Parse"
+	                ),
+
+	            "Generate" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Generate"
+	                ),
+
+	            "ApplyValues" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "ApplyValues"
+	                ),
+
+	            "InitParams" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "InitParams"
+	                ),
+
+	            "ID" => "CondUserName",
+	            "GROUP" => "Y"
+	        ),
+
+			"CondUserProperty" => Array
+	        (
+	           "GetControlShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetControlShow"
+	                ),
+
+	            "GetConditionShow" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "GetConditionShow"
+	                ),
+
+	            "IsGroup" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "IsGroup"
+	                ),
+
+	            "Parse" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Parse"
+	                ),
+
+	            "Generate" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "Generate"
+	                ),
+
+	            "ApplyValues" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "ApplyValues"
+	                ),
+
+	            "InitParams" => Array
+	                (
+	                    "CCatalogCondCtrlIBlockFields",
+	                    "InitParams"
+	                ),
+
+	            "ID" => "CondUserProperty",
+	            "GROUP" => "Y"
 	        ),
 
 			"CondIBTags" => Array
@@ -5094,7 +5746,7 @@ class CGlobalCondTree
 
 		if (!$this->boolError)
 		{
-			//echo "<pre>";print_R($arData);echo "</pre>";
+			echo "%<pre>";print_R($arData);echo "</pre>%";
 			$arResult = array();
 			foreach ($arData as $strKey => $value)
 			{
@@ -5136,6 +5788,8 @@ class CGlobalCondTree
 				//echo "<pre>";print_r($value);echo "</pre>";
 				//echo "<pre>";print_r($this->arControlList[$value['controlId']]['Parse']);echo "</pre>";				
 
+				echo "<pre>";print_r($this->arControlList[$value['controlId']]['Parse']);echo "</pre>";
+
 				$arOneCondition = call_user_func_array(
 					$this->arControlList[$value['controlId']]['Parse'],
 					array(
@@ -5143,7 +5797,7 @@ class CGlobalCondTree
 					)
 				);
 
-				//echo "<pre>";print_r($arOneCondition);echo "</pre>";
+				//echo "#<pre>";print_r($this->arControlList);echo "</pre>#";
 
 				/*if (false === $arOneCondition)
 				{
@@ -5153,7 +5807,7 @@ class CGlobalCondTree
 					break;
 				}*/
 
-				//echo "<pre>";print_r($arOneCondition);echo "</pre>";
+				echo "$<pre>";print_r($arOneCondition);echo "</pre>$";
 
 				$arItem = array(
 					'CLASS_ID' => $value['controlId'],

@@ -168,31 +168,33 @@ class CFoodclubEvent //CPanasonicMDBConnect
 
     function OnAfterUserAddHandler(&$arFields) {
         //return CPanasonicMDBUserAddHandler::OnAfterUserAddHandler($arFields);
-        $idList = getEventTypeIDList("USER", "AUTHORIZATION", "OnAfterUserAddHandler");
+        $idList = self::getEventTypeIDList("USER", "AUTHORIZATION", "OnAfterUserAddHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
     }
 
     function OnBeforeUserUpdateHandler(&$arFields) {
         //return CPanasonicMDBUpdateHandler::OnBeforeUserUpdateHandler($arFields);
-        $idList = getEventTypeIDList("USER", "AUTHORIZATION", "OnBeforeUserUpdateHandler");
+        $idList = self::getEventTypeIDList("USER", "EDIT_PROFILE", "OnBeforeUserUpdateHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
     }
 
     function OnAfterUserUpdateHandler(&$arFields) {
         //return CPanasonicMDBUpdateHandler::OnAfterUserUpdateHandler($arFields);
-        $idList = getEventTypeIDList("USER", "AUTHORIZATION", "OnAfterUserUpdateHandler");
+        $idList = self::getEventTypeIDList("USER", "EDIT_PROFILE", "OnAfterUserUpdateHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
+        //echo "<pre>";print_r($arFields);echo "</pre>";die;
+        return CFoodclubEventUserHandler::OnAfterUserUpdateHandler($arFields);
     }
 
     function OnBeforeUserDeleteHandler(&$arFields) {
         //return CPanasonicMDBDeleteHandler::OnBeforeUserDeleteHandler($arFields);
-        $idList = getEventTypeIDList("USER", "AUTHORIZATION", "OnBeforeUserDeleteHandler");
+        $idList = self::getEventTypeIDList("USER", "AUTHORIZATION", "OnBeforeUserDeleteHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
     }
 
     function OnAfterSocServUserAddHandler(&$arFields) {
         //return CPanasonicMDBSocServUserAddHandler::OnAfterSocServUserAddHandler($arFields);
-        $idList = getEventTypeIDList("USER", "AUTHORIZATION", "OnAfterSocServUserAddHandler");
+        $idList = self::getEventTypeIDList("USER", "AUTHORIZATION", "OnAfterSocServUserAddHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
     }
 
@@ -207,13 +209,13 @@ class CFoodclubEvent //CPanasonicMDBConnect
 
     //IBLOCK ELEMENT HANDLERS
     function OnBeforeIBlockElementAddHandler(&$arFields) {
-        $idList = getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_ADD", "OnBeforeIBlockElementAddHandler");
+        $idList = self::getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_ADD", "OnBeforeIBlockElementAddHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
         return CFoodclubIblockElementEventHandler::OnBeforeIBlockElementAddHandler($arFields);
     }
 
     function OnStartIBlockElementAddHandler(&$arFields) {
-        $idList = getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_ADD", "OnStartIBlockElementAddHandler");
+        $idList = self::getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_ADD", "OnStartIBlockElementAddHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
         return CFoodclubIblockElementEventHandler::OnStartIBlockElementAddHandler($arFields);
     }
@@ -226,31 +228,31 @@ class CFoodclubEvent //CPanasonicMDBConnect
     }
 
     function OnBeforeIBlockElementUpdateHandler(&$arFields) {
-        $idList = getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_UPDATE", "OnBeforeIBlockElementUpdateHandler");
+        $idList = self::getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_UPDATE", "OnBeforeIBlockElementUpdateHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
         return CFoodclubIblockElementEventHandler::OnBeforeIBlockElementUpdateHandler($arFields);
     }
     
     function OnStartIBlockElementUpdateHandler(&$arFields) {
-        $idList = getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_UPDATE", "OnStartIBlockElementUpdateHandler");
+        $idList = self::getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_UPDATE", "OnStartIBlockElementUpdateHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
         return CFoodclubIblockElementEventHandler::OnStartIBlockElementUpdateHandler($arFields);
     }
     
     function OnAfterIBlockElementUpdateHandler(&$arFields) {
-        $idList = getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_UPDATE", "OnAfterIBlockElementUpdateHandler");
+        $idList = self::getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_UPDATE", "OnAfterIBlockElementUpdateHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
         return CFoodclubIblockElementEventHandler::OnAfterIBlockElementUpdateHandler($arFields);
     }
 
     function OnBeforeIBlockElementDeleteHandler(&$arFields) {
-        $idList = getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_DELETE", "OnBeforeIBlockElementDeleteHandler");
+        $idList = self::getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_DELETE", "OnBeforeIBlockElementDeleteHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
         return CFoodclubIblockElementEventHandler::OnBeforeIBlockElementDeleteHandler($arFields);
     }
     
     function OnAfterIBlockElementDeleteHandler(&$arFields) {
-        $idList = getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_DELETE", "OnAfterIBlockElementDeleteHandler");
+        $idList = self::getEventTypeIDList("IBLOCK", "IBLOCK_ELEMENT_DELETE", "OnAfterIBlockElementDeleteHandler");
         $arFields["EVENTS"] = self::getEventList($idList);
         return CFoodclubIblockElementEventHandler::OnAfterIBlockElementDeleteHandler($arFields);
     }

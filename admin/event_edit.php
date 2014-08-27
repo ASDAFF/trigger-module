@@ -39,7 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $CURRENCY_RIGHT=="W" && strlen($Upda
 	}
 	else
 	{
-		//echo "#";		
 		$boolCond = false;
 		if (isset($_POST['CONDITIONS']) && isset($_POST['CONDITIONS_CHECK']))
 		{
@@ -58,8 +57,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $CURRENCY_RIGHT=="W" && strlen($Upda
 			}
 		}
 
-		if (!$boolCond)
+		if (!$boolCond){
 			$CONDITIONS = $obCond2->Parse();
+		}
 		if (empty($CONDITIONS))
 		{
 			//echo "$";
@@ -71,8 +71,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $CURRENCY_RIGHT=="W" && strlen($Upda
 			$boolCondParseError = true;
 		}
 	}
-	/*echo "<pre>";print_r($CONDITIONS);echo "</pre>";
-	die;*/
+	//echo "<pre>";print_r($CONDITIONS);echo "</pre>";
+	//die;
 
 	$arFields = array(		
 		"NAME" => $_POST['NAME'],
@@ -305,30 +305,6 @@ if($message)
 <?$tabControl->BeginNextTab();?>
 	<tr id="tr_CONDITIONS">
 		<td valign="top" colspan="2"><div id="tree" style="position: relative; z-index: 1;"></div><?			
-			/*$arDiscount['CONDITIONS'] = Array
-			(
-			    "CLASS_ID" => "CondGroup",
-			    "DATA" => Array
-			        (
-			            "All" => "OR",
-			            "True" => "True"
-			        ),
-
-			    "CHILDREN" => Array
-			        (
-			            Array
-			                (
-			                    "CLASS_ID" => "CondIBElement",
-			                    "DATA" => Array
-			                        (
-			                            "logic" => "Equal",
-			                            "value" => "31424",
-			                        )
-
-			                )
-			        )
-			);*/
-			//echo "<pre>";print_r($arDiscount['CONDITIONS']);echo "</pre>";die;
 			if (!is_array($arDiscount['CONDITIONS']))
 			{
 				if (CheckSerializedData($arDiscount['CONDITIONS']))
